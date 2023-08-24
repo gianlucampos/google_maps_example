@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:google_maps_example/pages/postos_page.dart';
-import 'package:google_maps_example/repositories/postos_repository.dart';
+import 'package:google_maps_example/front/pages/home_page.dart';
+import 'package:google_maps_example/back/repositories/placeholder_repository.dart';
 import 'package:provider/provider.dart';
 
 void main() async {
@@ -19,10 +19,6 @@ void main() async {
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
-  String getVariables() {
-    return FlutterConfig.variables.toString();
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -31,7 +27,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: const PostosPage(),
+      home: const HomePage(),
     );
   }
 }

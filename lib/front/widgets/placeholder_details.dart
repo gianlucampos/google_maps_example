@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_example/models/posto.dart';
+import 'package:google_maps_example/back/models/custom_placeholder.dart';
 
-class PostoDetalhes extends StatelessWidget {
-  const PostoDetalhes({Key? key, required this.posto}) : super(key: key);
-  final Posto posto;
+class PlaceHolderDetails extends StatelessWidget {
+  const PlaceHolderDetails({Key? key, required this.placeholder}) : super(key: key);
+  final CustomPlaceholder placeholder;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       children: [
-        Image.network(posto.foto,
+        Image.network(placeholder.image,
             height: 250,
             width: MediaQuery.of(context).size.width,
             fit: BoxFit.cover),
         Padding(
           padding: const EdgeInsets.only(top: 24, left: 24),
           child: Text(
-            posto.nome,
+            placeholder.name,
             style: const TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w600,
@@ -26,7 +26,7 @@ class PostoDetalhes extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 60, left: 24),
           child: Text(
-            posto.endereco,
+            placeholder.adress,
           ),
         ),
       ],
