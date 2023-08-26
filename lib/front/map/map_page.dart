@@ -19,7 +19,6 @@ class MapPage extends StatefulWidget {
 }
 
 class _MapPageState extends State<MapPage> {
-
   final appStore = GetIt.I.get<AppStore>();
   final controller = GetIt.I.get<MapController>();
 
@@ -27,7 +26,7 @@ class _MapPageState extends State<MapPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     autorun((_) {
-      // print("Autorun has been triggered ${controller.markers.length}");
+      print("Autorun has been triggered ${controller.markers.length}");
       setState(() {});
     });
   }

@@ -7,6 +7,7 @@ import 'package:google_maps_example/back/models/custom_placeholder.dart';
 import 'package:google_maps_example/back/repositories/placeholder_repository.dart';
 import 'package:google_maps_example/front/map/map_page.dart';
 import 'package:google_maps_example/front/map/widgets/placeholder_details.dart';
+import 'package:google_maps_example/front/store/app_store.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobx/mobx.dart';
 
@@ -20,23 +21,35 @@ abstract class _MapController with Store {
 
   LatLng coordenates = const LatLng(-31.751510, -52.378206);
 
+  final appStore = GetIt.I.get<AppStore>();
+
   @observable
   ObservableSet<Marker> markers = ObservableSet<Marker>();
 
   @action
   void addMarker(CustomPlaceholder point) {
+    if (appStore.markerMode == MarkerMode.remove) return;
+
     final marker = Marker(
+      consumeTapEvents: true,
       markerId: MarkerId(point.name),
       position: LatLng(point.latitude, point.longitude),
-      onTap: () async => await _showModal.call(point),
+      onTap: () => chooseActionOnTap(point),
     );
     markers.add(marker);
   }
 
   @action
   void removeMarker(LatLng coordenates) {
-    // markers.removeWhere((elem) => elem.position == coordenates);
-    markers.clear();
+    markers.removeWhere((elem) => elem.position == coordenates);
+  }
+
+  void chooseActionOnTap(CustomPlaceholder point) async {
+    if(appStore.markerMode == MarkerMode.remove) {
+      removeMarker(LatLng(point.latitude, point.longitude));
+    } else {
+      await _showModal.call(point);
+    }
   }
 
   void onMapCreated(GoogleMapController gmc) {
