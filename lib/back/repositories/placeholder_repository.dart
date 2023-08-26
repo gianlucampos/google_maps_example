@@ -1,7 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:google_maps_example/back/models/custom_placeholder.dart';
 
-class PostosRepository extends ChangeNotifier {
+class PostosRepository {
   final List<CustomPlaceholder> _points = [
     CustomPlaceholder(
       name: 'Posto GT - Rede Rodoil',
@@ -29,5 +28,5 @@ class PostosRepository extends ChangeNotifier {
     ),
   ];
 
-  List<CustomPlaceholder> get points => _points;
+  List<CustomPlaceholder> get getPoints => _points;
 }

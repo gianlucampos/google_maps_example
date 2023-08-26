@@ -1,57 +1,55 @@
 import 'dart:developer' as developer;
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_it/get_it.dart';
 import 'package:google_maps_example/back/models/custom_placeholder.dart';
 import 'package:google_maps_example/back/repositories/placeholder_repository.dart';
-import 'package:google_maps_example/front/pages/home_page.dart';
-import 'package:google_maps_example/front/widgets/placeholder_details.dart';
+import 'package:google_maps_example/front/map/map_page.dart';
+import 'package:google_maps_example/front/map/widgets/placeholder_details.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mobx/mobx.dart';
 
-class MapController extends ChangeNotifier {
-  LatLng coordenates = const LatLng(-31.751510, -52.378206);
-  Set<Marker> markers = <Marker>{};
+part 'map_controller.g.dart';
+
+// ignore: library_private_types_in_public_api
+class MapController = _MapController with _$MapController;
+
+abstract class _MapController with Store {
   late GoogleMapController mapsController;
 
-  onMapCreated(GoogleMapController gmc) {
-    mapsController = gmc;
-    _moveToCurrentLocation();
-    _loadMarkers();
-  }
+  LatLng coordenates = const LatLng(-31.751510, -52.378206);
 
-  addMarker(LatLng coordenate) {
+  @observable
+  ObservableSet<Marker> markers = ObservableSet<Marker>();
+
+  @action
+  void addMarker(CustomPlaceholder point) {
     final marker = Marker(
-      markerId: MarkerId(Random().nextInt(5).toString()),
-      position: coordenate,
+      markerId: MarkerId(point.name),
+      position: LatLng(point.latitude, point.longitude),
+      onTap: () async => await _showModal.call(point),
     );
     markers.add(marker);
-    notifyListeners();
+  }
+
+  @action
+  void removeMarker(LatLng coordenates) {
+    // markers.removeWhere((elem) => elem.position == coordenates);
+    markers.clear();
+  }
+
+  void onMapCreated(GoogleMapController gmc) {
+    mapsController = gmc;
+    // _loadMarkers();
+    // _moveToCurrentLocation();
   }
 
   void _loadMarkers() async {
-    final mapPoints = PostosRepository().points;
-
+    final mapPoints = GetIt.I.get<PostosRepository>().getPoints;
     for (CustomPlaceholder point in mapPoints) {
-      markers.add(
-        Marker(
-          markerId: MarkerId(point.name),
-          position: LatLng(point.latitude, point.longitude),
-          icon: await BitmapDescriptor.fromAssetImage(
-            const ImageConfiguration(),
-            'images/posto.png',
-          ),
-          onTap: () => {
-            showModalBottomSheet(
-              context: appKey.currentState!.context,
-              builder: (context) => PlaceHolderDetails(placeholder: point),
-            )
-          },
-        ),
-      );
+      addMarker(point);
     }
-
-    notifyListeners();
   }
 
   void _moveToCurrentLocation() async {
@@ -59,11 +57,10 @@ class MapController extends ChangeNotifier {
       _checkLocationPermition();
       Position currentPosition = await Geolocator.getCurrentPosition();
       coordenates = LatLng(currentPosition.latitude, currentPosition.longitude);
-      mapsController.animateCamera(CameraUpdate.newLatLng(coordenates));
+      await mapsController.animateCamera(CameraUpdate.newLatLng(coordenates));
     } catch (e) {
       developer.log('Error at getPosicao: $e');
     }
-    notifyListeners();
   }
 
   void _checkLocationPermition() async {
@@ -83,5 +80,12 @@ class MapController extends ChangeNotifier {
     if (permition == LocationPermission.deniedForever) {
       throw Future.error('Você precisa autorizar o acesso à localização');
     }
+  }
+
+  Future _showModal(CustomPlaceholder point) {
+    return showModalBottomSheet(
+      context: appKey.currentState!.context,
+      builder: (context) => PlaceHolderDetails(placeholder: point),
+    );
   }
 }

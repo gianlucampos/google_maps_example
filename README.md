@@ -9,9 +9,13 @@ A new Flutter project.
 
   TODO checklist:
 
-  - Create Marker
-  - Retrieve Marker [DONE]
-  - Update Marker 
-  - Delete Marker
-  - Map Design
-  - Filter markers
+    - Create Marker
+    - Retrieve Marker [DONE]
+    - Update Marker
+    - Delete Marker
+    - Map Design
+    - Filter markers
+
+  Commands to execute 
+- flutter packages pub run build_runner build
+- flutter packages pub run build_runner build --delete-conflicting-outputs

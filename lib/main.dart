@@ -1,19 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_config/flutter_config.dart';
-import 'package:google_maps_example/front/pages/home_page.dart';
-import 'package:google_maps_example/back/repositories/placeholder_repository.dart';
-import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
+import 'package:google_maps_example/front/map/map_controller.dart';
+import 'package:google_maps_example/front/map/map_page.dart';
+
+import 'back/repositories/placeholder_repository.dart';
+import 'front/store/app_store.dart';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
+  setupDI();
+  runApp(const MainApp());
+}
 
-  runApp(
-    ChangeNotifierProvider<PostosRepository>(
-      create: (_) => PostosRepository(),
-      child: const MainApp(),
-    ),
-  );
+void setupDI() {
+  GetIt getIt = GetIt.instance;
+  getIt.registerSingleton<PostosRepository>(PostosRepository());
+  getIt.registerSingleton<AppStore>(AppStore());
+  getIt.registerSingleton<MapController>(MapController());
 }
 
 class MainApp extends StatelessWidget {
@@ -27,7 +33,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: const HomePage(),
+      home: MapPage(),
     );
   }
 }
