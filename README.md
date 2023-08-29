@@ -9,10 +9,10 @@ A new Flutter project.
 
   TODO checklist:
 
-    - Create Marker
+    - Create Marker [DONE]
     - Retrieve Marker [DONE]
     - Update Marker
-    - Delete Marker
+    - Delete Marker [DONE]
     - Map Design
     - Filter markers
 

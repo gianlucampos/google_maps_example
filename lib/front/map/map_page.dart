@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:google_maps_example/back/models/custom_placeholder.dart';
 import 'package:google_maps_example/front/map/map_controller.dart';
+import 'package:google_maps_example/front/map/widgets/placeholder_form.dart';
 import 'package:google_maps_example/front/store/app_store.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobx/mobx.dart';
@@ -85,15 +83,12 @@ class _MapPageState extends State<MapPage> {
     );
   }
 
-  void onTap(LatLng coordenates) {
-    final placeholder = CustomPlaceholder(
-      name: 'Posto GT - Rede Rodoil ${Random().nextInt(100)}',
-      adress: 'R. João Negrão, 1072 - Rebouças - Centro, Curitiba - PR',
-      image:
-          'https://lh5.googleusercontent.com/p/AF1QipP_xnSi5-sp9slSuMpSx-JlmvwvHGL1VJ_JcOGX=w408-h306-k-no',
-      latitude: coordenates.latitude,
-      longitude: coordenates.longitude,
-    );
-    controller.addMarker(placeholder);
+  void onTap(LatLng coordenates) async {
+    if (appStore.markerMode != MarkerMode.remove) {
+      await showDialog(
+        context: appKey.currentState!.context,
+        builder: (context) => PlaceholderModal(coordenates: coordenates),
+      );
+    }
   }
 }

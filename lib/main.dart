@@ -7,7 +7,6 @@ import 'package:google_maps_example/front/map/map_page.dart';
 import 'back/repositories/placeholder_repository.dart';
 import 'front/store/app_store.dart';
 
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await FlutterConfig.loadEnvVariables();
@@ -33,7 +32,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.amber,
       ),
-      home: MapPage(),
+      home: const MapPage(),
     );
   }
 }

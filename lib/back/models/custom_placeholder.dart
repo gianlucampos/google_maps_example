@@ -1,14 +1,16 @@
 class CustomPlaceholder {
   String name;
   String adress;
-  String image;
+  String? imageLink;
+  String? imagePath;
   double latitude;
   double longitude;
 
   CustomPlaceholder({
     required this.name,
     required this.adress,
-    required this.image,
+    this.imageLink,
+    this.imagePath,
     required this.latitude,
     required this.longitude,
   });

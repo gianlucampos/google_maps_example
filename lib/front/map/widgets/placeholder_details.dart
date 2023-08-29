@@ -1,18 +1,32 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_example/back/models/custom_placeholder.dart';
 
 class PlaceHolderDetails extends StatelessWidget {
-  const PlaceHolderDetails({Key? key, required this.placeholder}) : super(key: key);
+  const PlaceHolderDetails({Key? key, required this.placeholder})
+      : super(key: key);
   final CustomPlaceholder placeholder;
 
   @override
   Widget build(BuildContext context) {
+    Image getImage() {
+      return placeholder.imageLink != null
+          ? Image.network(
+              placeholder.imageLink!,
+              height: 250,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover,
+            )
+          : Image.file(File(placeholder.imagePath!),
+              height: 250,
+              width: MediaQuery.of(context).size.width,
+              fit: BoxFit.cover);
+    }
+
     return Wrap(
       children: [
-        Image.network(placeholder.image,
-            height: 250,
-            width: MediaQuery.of(context).size.width,
-            fit: BoxFit.cover),
+        getImage(),
         Padding(
           padding: const EdgeInsets.only(top: 24, left: 24),
           child: Text(

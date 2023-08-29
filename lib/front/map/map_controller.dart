@@ -30,7 +30,7 @@ abstract class _MapController with Store {
   void addMarker(CustomPlaceholder point) {
     if (appStore.markerMode == MarkerMode.remove) return;
 
-    final marker = Marker(
+    var marker = Marker(
       consumeTapEvents: true,
       markerId: MarkerId(point.name),
       position: LatLng(point.latitude, point.longitude),
@@ -54,7 +54,7 @@ abstract class _MapController with Store {
 
   void onMapCreated(GoogleMapController gmc) {
     mapsController = gmc;
-    // _loadMarkers();
+    _loadMarkers();
     // _moveToCurrentLocation();
   }
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mobx/mobx.dart';
 
 part 'app_store.g.dart';
@@ -14,9 +16,15 @@ abstract class _AppStore with Store {
   @observable
   String appBarDescription = 'Google Maps Example';
 
+  @observable
+  File? selectedImage;
+
   @action
   void setMarkerMode(MarkerMode value) => markerMode = value;
 
   @action
   void setAppBarDescription(String value) => appBarDescription = value;
+
+  @action
+  void setSelectedImage(File value) => selectedImage = value;
 }
