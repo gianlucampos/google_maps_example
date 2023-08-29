@@ -27,7 +27,6 @@ class PlaceholderModal extends StatelessWidget {
         width: MediaQuery.of(context).size.width * 0.9,
         child: Wrap(
           children: [
-            const ImagePickerWidget(),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: Form(
@@ -35,9 +34,11 @@ class PlaceholderModal extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const ImagePickerWidget(),
                     SizedBox(
                       height: 50,
                       child: TextFormField(
+                        validator: _textValidator,
                         controller: _nameController,
                         textAlignVertical: TextAlignVertical.top,
                         maxLength: 50,
@@ -51,6 +52,7 @@ class PlaceholderModal extends StatelessWidget {
                     SizedBox(
                       height: 50,
                       child: TextFormField(
+                        validator: _textValidator,
                         controller: _adressController,
                         textAlignVertical: TextAlignVertical.top,
                         maxLength: 50,
@@ -64,6 +66,22 @@ class PlaceholderModal extends StatelessWidget {
                     Center(
                       child: ElevatedButton(
                         onPressed: () {
+                          if (!_formKey.currentState!.validate()) return;
+                          if (_appStore.selectedImage == null) {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: () => Navigator.pop(context),
+                                      child: const Text('Ok'),
+                                    )
+                                  ],
+                                  content: const Text(
+                                      'Image is necessary, choose one please!')),
+                            );
+                            return;
+                          }
                           final placeholder = CustomPlaceholder(
                             name: _nameController.text,
                             adress: _adressController.text,
@@ -73,15 +91,14 @@ class PlaceholderModal extends StatelessWidget {
                           );
                           _controller.addMarker(placeholder);
                           Navigator.of(context).pop();
+                          // _appStore.setSelectedImage(null);
                         },
                         child: const Text('Add marker'),
                       ),
                     ),
                     Center(
                       child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
+                        onPressed: () => Navigator.pop(context),
                         child: const Text('Cancel'),
                       ),
                     )
@@ -95,4 +112,10 @@ class PlaceholderModal extends StatelessWidget {
     );
   }
 
+  String? _textValidator(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Please enter some text';
+    }
+    return null;
+  }
 }

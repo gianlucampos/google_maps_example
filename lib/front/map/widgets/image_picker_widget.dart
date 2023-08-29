@@ -46,19 +46,22 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                     ),
                   ),
                 )
-              : const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 20),
-                  child: Text(
-                    "No Image",
-                    style: TextStyle(fontSize: 20),
+              : Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Container(
+                    color: Colors.black12,
+                    child: IconButton(
+                      enableFeedback: true,
+                      iconSize: 120,
+                      tooltip: 'Upload Photo',
+                      onPressed: () => _buildAlertDialog(context),
+                      icon: const Icon(
+                        Icons.add_a_photo_outlined,
+                        color: Colors.grey,
+                      ),
+                    ),
                   ),
                 ),
-          ElevatedButton(
-            onPressed: () {
-              _buildAlertDialog(context);
-            },
-            child: const Text('Upload Photo'),
-          ),
         ],
       ),
     );
