@@ -80,7 +80,7 @@ class _MapPageState extends State<MapPage> {
           ),
           zoomControlsEnabled: true,
           myLocationEnabled: true,
-          mapType: MapType.terrain,
+          // mapType: MapType.terrain,
           markers: controller.markers,
           onMapCreated: controller.onMapCreated,
           onTap: controller.createMarker,

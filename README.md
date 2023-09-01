@@ -13,7 +13,7 @@ A new Flutter project.
     - Retrieve Marker [DONE]
     - Update Marker [DONE]
     - Delete Marker [DONE]
-    - Map Design
+    - Map Design (snazymaps, mapstyles) [DONE]
     - Filter markers
 
   Commands to execute 

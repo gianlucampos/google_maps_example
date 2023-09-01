@@ -1,6 +1,7 @@
 import 'dart:developer' as developer;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_maps_example/back/models/custom_placeholder.dart';
@@ -26,10 +27,12 @@ abstract class _MapController with Store {
   @observable
   ObservableSet<Marker> markers = ObservableSet<Marker>();
 
-  void onMapCreated(GoogleMapController gmc) {
+  void onMapCreated(GoogleMapController gmc) async {
     mapsController = gmc;
     _loadMarkers();
     _moveToCurrentLocation();
+    var style = await rootBundle.loadString('assets/map/default2.json');
+    mapsController.setMapStyle(style);
   }
 
   void createMarker(LatLng coordenates) {
@@ -44,12 +47,14 @@ abstract class _MapController with Store {
 
   @action
   void addMarker(CustomPlaceholder point) {
-    if (point.imagePath != null) repository.addPoint(point);
+    if (point.imagePath != null) repository.savePoint(point);
     var marker = Marker(
-      consumeTapEvents: true,
       markerId: MarkerId(point.name!),
       position: LatLng(point.latitude!, point.longitude!),
-      onTap: () => _chooseActionOnTap(point),
+      infoWindow: InfoWindow(
+        title: point.name!,
+        onTap: () => _chooseActionOnTap(point),
+      ),
     );
     markers.add(marker);
   }

@@ -32,7 +32,7 @@ class PostosRepository {
 
   Set<CustomPlaceholder> get getPoints => _points;
 
-  void addPoint(CustomPlaceholder point) {
+  void savePoint(CustomPlaceholder point) {
     if (_points.contains(point)) {
       _points.remove(point);
     }
