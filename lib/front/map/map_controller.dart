@@ -26,15 +26,31 @@ abstract class _MapController with Store {
   @observable
   ObservableSet<Marker> markers = ObservableSet<Marker>();
 
+  void onMapCreated(GoogleMapController gmc) {
+    mapsController = gmc;
+    _loadMarkers();
+    // _moveToCurrentLocation();
+  }
+
+  void createMarker(LatLng coordenates) {
+    if (appStore.markerMode == MarkerMode.create) {
+      CustomPlaceholder point = CustomPlaceholder(
+        latitude: coordenates.latitude,
+        longitude: coordenates.longitude,
+      );
+      _showMarkerCreateForm(point);
+      repository.addPoint(point);
+    }
+  }
+
   @action
   void addMarker(CustomPlaceholder point) {
     var marker = Marker(
       consumeTapEvents: true,
       markerId: MarkerId(point.name!),
       position: LatLng(point.latitude!, point.longitude!),
-      onTap: () => chooseActionOnTap(point),
+      onTap: () => _chooseActionOnTap(point),
     );
-    repository.addPoint(point);
     markers.add(marker);
   }
 
@@ -47,7 +63,7 @@ abstract class _MapController with Store {
     );
   }
 
-  void chooseActionOnTap(CustomPlaceholder point) async {
+  void _chooseActionOnTap(CustomPlaceholder point) async {
     if (appStore.markerMode == MarkerMode.remove) {
       removeMarker(LatLng(point.latitude!, point.longitude!));
       return;
@@ -59,7 +75,7 @@ abstract class _MapController with Store {
     );
 
     if (appStore.markerMode == MarkerMode.view) {
-      await _showModal.call(existentMarker!);
+      _showMarkerInfo(existentMarker!);
       return;
     }
 
@@ -72,13 +88,7 @@ abstract class _MapController with Store {
     }
   }
 
-  void onMapCreated(GoogleMapController gmc) {
-    mapsController = gmc;
-    _loadMarkers();
-    // _moveToCurrentLocation();
-  }
-
-  void _loadMarkers() async {
+  void _loadMarkers() {
     for (CustomPlaceholder point in repository.getPoints) {
       addMarker(point);
     }
@@ -115,10 +125,17 @@ abstract class _MapController with Store {
     }
   }
 
-  Future _showModal(CustomPlaceholder point) {
-    return showModalBottomSheet(
+  void _showMarkerInfo(CustomPlaceholder point) async {
+    await showModalBottomSheet(
       context: appKey.currentState!.context,
       builder: (context) => PlaceHolderDetails(placeholder: point),
+    );
+  }
+
+  void _showMarkerCreateForm(CustomPlaceholder point) async {
+    await showDialog(
+      context: appKey.currentState!.context,
+      builder: (context) => PlaceholderModal(coordenates: point),
     );
   }
 }

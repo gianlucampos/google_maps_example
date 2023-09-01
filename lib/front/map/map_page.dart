@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
-import 'package:google_maps_example/back/models/custom_placeholder.dart';
 import 'package:google_maps_example/front/map/map_controller.dart';
-import 'package:google_maps_example/front/map/widgets/placeholder_form.dart';
 import 'package:google_maps_example/front/store/app_store.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobx/mobx.dart';
@@ -78,29 +76,16 @@ class _MapPageState extends State<MapPage> {
         return GoogleMap(
           initialCameraPosition: const CameraPosition(
             target: LatLng(-25.4361979, -49.2624613),
-            zoom: 18,
+            zoom: 15,
           ),
           zoomControlsEnabled: true,
           myLocationEnabled: true,
           mapType: MapType.terrain,
           markers: controller.markers,
           onMapCreated: controller.onMapCreated,
-          onTap: onTap,
+          onTap: controller.createMarker,
         );
       }),
     );
-  }
-
-  void onTap(LatLng coordenates) async {
-    if (appStore.markerMode == MarkerMode.create) {
-      CustomPlaceholder point = CustomPlaceholder(
-        latitude: coordenates.latitude,
-        longitude: coordenates.longitude,
-      );
-      await showDialog(
-        context: appKey.currentState!.context,
-        builder: (context) => PlaceholderModal(coordenates: point),
-      );
-    }
   }
 }

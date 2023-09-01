@@ -42,88 +42,91 @@ class _PlaceholderModalState extends State<PlaceholderModal> {
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.75,
         width: MediaQuery.of(context).size.width * 0.9,
-        child: Wrap(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const ImagePickerWidget(),
-                    SizedBox(
-                      height: 50,
-                      child: TextFormField(
-                        validator: _textValidator,
-                        controller: _nameController,
-                        textAlignVertical: TextAlignVertical.top,
-                        maxLength: 50,
-                        decoration: const InputDecoration(
-                          hintText: 'Marker name',
-                          fillColor: Colors.white,
+        child: SingleChildScrollView(
+          child: Wrap(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const ImagePickerWidget(),
+                      SizedBox(
+                        height: 50,
+                        child: TextFormField(
+                          validator: _textValidator,
+                          controller: _nameController,
+                          textAlignVertical: TextAlignVertical.top,
+                          maxLength: 50,
+                          decoration: const InputDecoration(
+                            hintText: 'Marker name',
+                            fillColor: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                    const Divider(color: Colors.transparent, height: 15),
-                    SizedBox(
-                      height: 50,
-                      child: TextFormField(
-                        validator: _textValidator,
-                        controller: _adressController,
-                        textAlignVertical: TextAlignVertical.top,
-                        maxLength: 50,
-                        decoration: const InputDecoration(
-                          hintText: 'Adress',
-                          fillColor: Colors.white,
+                      const Divider(color: Colors.transparent, height: 15),
+                      SizedBox(
+                        height: 50,
+                        child: TextFormField(
+                          validator: _textValidator,
+                          controller: _adressController,
+                          textAlignVertical: TextAlignVertical.top,
+                          maxLength: 50,
+                          decoration: const InputDecoration(
+                            hintText: 'Adress',
+                            fillColor: Colors.white,
+                          ),
                         ),
                       ),
-                    ),
-                    const Divider(color: Colors.transparent, height: 15),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          if (!_formKey.currentState!.validate()) return;
-                          if (_appStore.selectedImage == null) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: () => Navigator.pop(context),
-                                      child: const Text('Ok'),
-                                    )
-                                  ],
-                                  content: const Text(
-                                      'Image is necessary, choose one please!')),
+                      const Divider(color: Colors.transparent, height: 15),
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (!_formKey.currentState!.validate()) return;
+                            if (_appStore.selectedImage == null) {
+                              showDialog(
+                                context: context,
+                                builder: (context) => AlertDialog(
+                                    actions: [
+                                      ElevatedButton(
+                                        onPressed: () => Navigator.pop(context),
+                                        child: const Text('Ok'),
+                                      )
+                                    ],
+                                    content: const Text(
+                                        'Image is necessary, choose one please!')),
+                              );
+                              return;
+                            }
+                            final placeholder = CustomPlaceholder(
+                              name: _nameController.text,
+                              adress: _adressController.text,
+                              imagePath: _appStore.selectedImage!.path,
+                              latitude: widget.coordenates.latitude,
+                              longitude: widget.coordenates.longitude,
                             );
-                            return;
-                          }
-                          final placeholder = CustomPlaceholder(
-                            name: _nameController.text,
-                            adress: _adressController.text,
-                            imagePath: _appStore.selectedImage!.path,
-                            latitude: widget.coordenates.latitude,
-                            longitude: widget.coordenates.longitude,
-                          );
-                          _controller.addMarker(placeholder);
-                          Navigator.of(context).pop();
-                          _appStore.setSelectedImage(null);
-                        },
-                        child: const Text('Add marker'),
+                            _controller.addMarker(placeholder);
+                            Navigator.of(context).pop();
+                            _appStore.setSelectedImage(null);
+                          },
+                          child: const Text('Add marker'),
+                        ),
                       ),
-                    ),
-                    Center(
-                      child: ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Cancel'),
-                      ),
-                    )
-                  ],
+                      Center(
+                        child: ElevatedButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

@@ -46,11 +46,14 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
                       const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(8),
-                    child: Image.file(
-                      File(image!.path),
-                      fit: BoxFit.cover,
-                      width: MediaQuery.of(context).size.width,
-                      height: 300,
+                    child: GestureDetector(
+                      onTap: () => _buildAlertDialog(context),
+                      child: Image.file(
+                        File(image!.path),
+                        fit: BoxFit.cover,
+                        width: MediaQuery.of(context).size.width,
+                        height: 300,
+                      ),
                     ),
                   ),
                 )
