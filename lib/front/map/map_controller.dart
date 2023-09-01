@@ -29,7 +29,7 @@ abstract class _MapController with Store {
   void onMapCreated(GoogleMapController gmc) {
     mapsController = gmc;
     _loadMarkers();
-    // _moveToCurrentLocation();
+    _moveToCurrentLocation();
   }
 
   void createMarker(LatLng coordenates) {
@@ -39,12 +39,12 @@ abstract class _MapController with Store {
         longitude: coordenates.longitude,
       );
       _showMarkerCreateForm(point);
-      repository.addPoint(point);
     }
   }
 
   @action
   void addMarker(CustomPlaceholder point) {
+    if (point.imagePath != null) repository.addPoint(point);
     var marker = Marker(
       consumeTapEvents: true,
       markerId: MarkerId(point.name!),
