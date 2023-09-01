@@ -1,7 +1,9 @@
 import 'package:google_maps_example/back/models/custom_placeholder.dart';
+// ignore: depend_on_referenced_packages
+import 'package:collection/collection.dart';
 
 class PostosRepository {
-  final List<CustomPlaceholder> _points = [
+  final Set<CustomPlaceholder> _points = {
     CustomPlaceholder(
       name: 'Posto GT - Rede Rodoil',
       adress: 'R. João Negrão, 1072 - Rebouças - Centro, Curitiba - PR',
@@ -26,7 +28,26 @@ class PostosRepository {
       latitude: -25.435260,
       longitude: -49.2620769,
     ),
-  ];
+  };
 
-  List<CustomPlaceholder> get getPoints => _points;
+  Set<CustomPlaceholder> get getPoints => _points;
+
+  void addPoint(CustomPlaceholder point) {
+    if (_points.contains(point)) {
+      _points.remove(point);
+    }
+    _points.add(point);
+  }
+
+  CustomPlaceholder? getPointByPosition(
+      {required double latitude, required double longitude}) {
+    return _points.firstWhereOrNull(
+        (point) => point.latitude == latitude && point.longitude == longitude);
+  }
+
+  void removePointByCoordenates(
+      {required double latitude, required double longitude}) {
+    _points.removeWhere(
+        (point) => point.latitude == latitude && point.longitude == longitude);
+  }
 }

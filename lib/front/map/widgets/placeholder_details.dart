@@ -30,7 +30,7 @@ class PlaceHolderDetails extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(top: 24, left: 24),
           child: Text(
-            placeholder.name,
+            placeholder.name!,
             style: const TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w600,
@@ -40,7 +40,7 @@ class PlaceHolderDetails extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: 60, left: 24),
           child: Text(
-            placeholder.adress,
+            placeholder.adress!,
           ),
         ),
       ],

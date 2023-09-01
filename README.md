@@ -11,7 +11,7 @@ A new Flutter project.
 
     - Create Marker [DONE]
     - Retrieve Marker [DONE]
-    - Update Marker
+    - Update Marker [DONE]
     - Delete Marker [DONE]
     - Map Design
     - Filter markers

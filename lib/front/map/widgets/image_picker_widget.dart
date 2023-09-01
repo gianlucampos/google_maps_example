@@ -27,6 +27,14 @@ class _ImagePickerWidgetState extends State<ImagePickerWidget> {
   }
 
   @override
+  void initState() {
+    if (_appStore.selectedImage != null) {
+      image = XFile(_appStore.selectedImage!.path);
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Center(
       child: Column(

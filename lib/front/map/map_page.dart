@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_maps_example/back/models/custom_placeholder.dart';
 import 'package:google_maps_example/front/map/map_controller.dart';
 import 'package:google_maps_example/front/map/widgets/placeholder_form.dart';
 import 'package:google_maps_example/front/store/app_store.dart';
@@ -24,7 +25,7 @@ class _MapPageState extends State<MapPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     autorun((_) {
-      print("Autorun has been triggered ${controller.markers.length}");
+      debugPrint("Autorun has been triggered ${controller.markers.length}");
       setState(() {});
     });
   }
@@ -38,16 +39,23 @@ class _MapPageState extends State<MapPage> {
         child: Observer(builder: (_) {
           return AppBar(
             title: Text(appStore.appBarDescription),
-            leading: appStore.markerMode == MarkerMode.create
+            leading: appStore.markerMode == MarkerMode.view
                 ? null
                 : IconButton(
                     onPressed: () {
                       appStore.setAppBarDescription('Google Maps Example');
-                      appStore.setMarkerMode(MarkerMode.create);
+                      appStore.setMarkerMode(MarkerMode.view);
                     },
                     icon: const Icon(Icons.cancel),
                   ),
             actions: [
+              IconButton(
+                onPressed: () {
+                  appStore.setAppBarDescription('Adding markers');
+                  appStore.setMarkerMode(MarkerMode.create);
+                },
+                icon: const Icon(Icons.add_location_alt_rounded),
+              ),
               IconButton(
                 onPressed: () {
                   appStore.setAppBarDescription('Editing markers');
@@ -68,8 +76,8 @@ class _MapPageState extends State<MapPage> {
       ),
       body: Observer(builder: (_) {
         return GoogleMap(
-          initialCameraPosition: CameraPosition(
-            target: controller.coordenates,
+          initialCameraPosition: const CameraPosition(
+            target: LatLng(-25.4361979, -49.2624613),
             zoom: 18,
           ),
           zoomControlsEnabled: true,
@@ -84,10 +92,14 @@ class _MapPageState extends State<MapPage> {
   }
 
   void onTap(LatLng coordenates) async {
-    if (appStore.markerMode != MarkerMode.remove) {
+    if (appStore.markerMode == MarkerMode.create) {
+      CustomPlaceholder point = CustomPlaceholder(
+        latitude: coordenates.latitude,
+        longitude: coordenates.longitude,
+      );
       await showDialog(
         context: appKey.currentState!.context,
-        builder: (context) => PlaceholderModal(coordenates: coordenates),
+        builder: (context) => PlaceholderModal(coordenates: point),
       );
     }
   }

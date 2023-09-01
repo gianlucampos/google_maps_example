@@ -7,6 +7,7 @@ import 'package:google_maps_example/back/models/custom_placeholder.dart';
 import 'package:google_maps_example/back/repositories/placeholder_repository.dart';
 import 'package:google_maps_example/front/map/map_page.dart';
 import 'package:google_maps_example/front/map/widgets/placeholder_details.dart';
+import 'package:google_maps_example/front/map/widgets/placeholder_form.dart';
 import 'package:google_maps_example/front/store/app_store.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mobx/mobx.dart';
@@ -17,38 +18,57 @@ part 'map_controller.g.dart';
 class MapController = _MapController with _$MapController;
 
 abstract class _MapController with Store {
-  late GoogleMapController mapsController;
-
-  LatLng coordenates = const LatLng(-31.751510, -52.378206);
-
   final appStore = GetIt.I.get<AppStore>();
+  final repository = GetIt.I.get<PostosRepository>();
+
+  late GoogleMapController mapsController;
 
   @observable
   ObservableSet<Marker> markers = ObservableSet<Marker>();
 
   @action
   void addMarker(CustomPlaceholder point) {
-    if (appStore.markerMode == MarkerMode.remove) return;
-
     var marker = Marker(
       consumeTapEvents: true,
-      markerId: MarkerId(point.name),
-      position: LatLng(point.latitude, point.longitude),
+      markerId: MarkerId(point.name!),
+      position: LatLng(point.latitude!, point.longitude!),
       onTap: () => chooseActionOnTap(point),
     );
+    repository.addPoint(point);
     markers.add(marker);
   }
 
   @action
   void removeMarker(LatLng coordenates) {
     markers.removeWhere((elem) => elem.position == coordenates);
+    repository.removePointByCoordenates(
+      latitude: coordenates.latitude,
+      longitude: coordenates.longitude,
+    );
   }
 
   void chooseActionOnTap(CustomPlaceholder point) async {
-    if(appStore.markerMode == MarkerMode.remove) {
-      removeMarker(LatLng(point.latitude, point.longitude));
-    } else {
-      await _showModal.call(point);
+    if (appStore.markerMode == MarkerMode.remove) {
+      removeMarker(LatLng(point.latitude!, point.longitude!));
+      return;
+    }
+
+    var existentMarker = repository.getPointByPosition(
+      latitude: point.latitude!,
+      longitude: point.longitude!,
+    );
+
+    if (appStore.markerMode == MarkerMode.view) {
+      await _showModal.call(existentMarker!);
+      return;
+    }
+
+    if (appStore.markerMode == MarkerMode.edit) {
+      await showDialog(
+        context: appKey.currentState!.context,
+        builder: (context) => PlaceholderModal(coordenates: existentMarker!),
+      );
+      return;
     }
   }
 
@@ -59,8 +79,7 @@ abstract class _MapController with Store {
   }
 
   void _loadMarkers() async {
-    final mapPoints = GetIt.I.get<PostosRepository>().getPoints;
-    for (CustomPlaceholder point in mapPoints) {
+    for (CustomPlaceholder point in repository.getPoints) {
       addMarker(point);
     }
   }
@@ -69,7 +88,8 @@ abstract class _MapController with Store {
     try {
       _checkLocationPermition();
       Position currentPosition = await Geolocator.getCurrentPosition();
-      coordenates = LatLng(currentPosition.latitude, currentPosition.longitude);
+      final coordenates =
+          LatLng(currentPosition.latitude, currentPosition.longitude);
       await mapsController.animateCamera(CameraUpdate.newLatLng(coordenates));
     } catch (e) {
       developer.log('Error at getPosicao: $e');
